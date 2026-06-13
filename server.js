@@ -2,8 +2,48 @@ const express = require("express");
 
 const webRouter = require("./modules/routes/web.js");
 const apiRouter = require("./modules/routes/api");
+const mongoose = require("mongoose");
 
 global.config = require("./modules/config");
+
+//connect to DB
+const connectToDB = async () => {
+  try {
+    await mongoose.connect("mongodb://127.0.0.1:27018/nexor");
+    console.log("DATABASE CONNECTED");
+  } catch (error) {
+    console.error("DATABASE CONNECTION FAILED:", error.message);
+    process.exit(1);
+  }
+};
+
+connectToDB();
+
+const Schema = mongoose.Schema;
+
+const UserSchema = new Schema({
+  name: { type: String, required: true },
+});
+
+const userModel = mongoose.model("User", UserSchema);
+
+const createUser = async () => {
+  try {
+    const user = new userModel({
+      name: "Mohammad zahedi",
+    });
+
+    await user.save();
+
+    console.log("User saved successfully:", user);
+  } catch (error) {
+    console.error("Error saving user:", error.message);
+  }
+};
+
+createUser();
+
+console.log("DATABASE CONNECTED");
 
 const app = express();
 
