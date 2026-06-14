@@ -21,5 +21,8 @@
     "express": "^5.2.1",
     "mongoose": "^9.7.0"
   },
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/mongoose": "^5.11.96"
+  }
 }
