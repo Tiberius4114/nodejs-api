@@ -1,7 +1,7 @@
 const express = require("express");
 
 const webRouter = require("./modules/routes/web.js");
-const apiRouter = require("./modules/routes/api");
+const apiRouter = require("./modules/routes/api/index.js");
 const mongoose = require("mongoose");
 
 global.config = require("./modules/config");
