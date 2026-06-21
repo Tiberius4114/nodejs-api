@@ -2,14 +2,11 @@ const express = require("express");
 
 const router = express.Router();
 
-router.get("/courses", (_, res) => {
-  return res.json({
-    data: [
-      {
-        title: "course item from v1",
-      },
-    ],
-  });
-});
+//Controllers
+
+const HomeCourseController = require(`${config.path.controller.api}/v1/home/course`);
+
+//courses
+router.get("/courses", HomeCourseController.findAll);
 
 module.exports = router;

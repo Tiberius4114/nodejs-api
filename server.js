@@ -1,10 +1,10 @@
+global.config = require("./modules/config");
+
 const express = require("express");
 
 const webRouter = require("./modules/routes/web.js");
 const apiRouter = require("./modules/routes/api/index.js");
 const mongoose = require("mongoose");
-
-global.config = require("./modules/config");
 
 //connect to DB
 const connectToDB = async () => {

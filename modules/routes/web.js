@@ -1,12 +1,12 @@
 const express = require("express");
+const config = require("../config");
 const webRouter = express.Router();
 
-webRouter.get("/", (_, res) => {
-  res.json({ message: "Welcome to Home route" });
-});
+//Controller
+const WebController = require(`${config.path.controller.web}`);
 
-webRouter.get("/about", (_, res) => {
-  res.json({ message: "Welcome to About Us route" });
-});
+webRouter.get("/", WebController.index);
+
+webRouter.get("/about", WebController.about);
 
 module.exports = webRouter;
