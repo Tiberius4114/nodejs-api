@@ -19,32 +19,6 @@ const connectToDB = async () => {
 
 connectToDB();
 
-const Schema = mongoose.Schema;
-
-const UserSchema = new Schema({
-  name: { type: String, required: true },
-});
-
-const userModel = mongoose.model("User", UserSchema);
-
-const createUser = async () => {
-  try {
-    const user = new userModel({
-      name: "Mohammad zahedi",
-    });
-
-    await user.save();
-
-    console.log("User saved successfully:", user);
-  } catch (error) {
-    console.error("Error saving user:", error.message);
-  }
-};
-
-createUser();
-
-console.log("DATABASE CONNECTED");
-
 const app = express();
 
 //we should define the middleware before defining the routes,
