@@ -1,4 +1,4 @@
-global.config = require("./modules/config");
+global.config = require("./config");
 
 const express = require("express");
 
