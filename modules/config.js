@@ -8,6 +8,7 @@ module.exports = {
       api: path.resolve("./modules/controllers/api"),
       web: path.resolve("./modules/controllers/web.js"),
     },
+    validations: path.resolve("./modules/validations"),
     models: path.resolve("./modules/models"),
   },
 };

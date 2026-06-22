@@ -44,12 +44,9 @@ class AdminCourseController extends Controller {
     try {
       //Validation
 
-      const newCourse = new this.models.Course({
-        title: req.body.title,
-        body: req.body.body,
-        price: req.body.price,
-        image: req.body.image,
-      });
+      const validationData = this.validations.courseSchema.parse(req.body);
+
+      const newCourse = new this.models.Course(validationData);
 
       console.log("before store course", newCourse);
 
@@ -59,23 +56,20 @@ class AdminCourseController extends Controller {
 
       res.status(200).json({ message: "Course created", data: savedCourse });
     } catch (error) {
-      console.log("Server error", error);
-      res.status(500).json({ message: "Server error" });
+      console.error(error, "ERROR");
+      this.errorHandler(error, res);
     }
   }
 
   async update(req, res) {
     try {
-      //Validatonn
+      //Validation
+
+      const validationData = this.validations.courseSchema.parse(req.body);
 
       const updatedCourse = await this.models.Course.findByIdAndUpdate(
         req.params.id,
-        {
-          title: req.body.title,
-          body: req.body.body,
-          price: req.body.price,
-          image: req.body.image,
-        },
+        validationData,
         {
           new: true,
           runValidators: false,
@@ -86,7 +80,8 @@ class AdminCourseController extends Controller {
 
       res.json({ data: updatedCourse });
     } catch (error) {
-      throw error;
+      console.error(error, "ERROR");
+      this.errorHandler(error, res);
     }
   }
 
