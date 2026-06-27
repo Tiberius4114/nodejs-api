@@ -6,10 +6,10 @@ const EpisodeSchema = new Schema(
     course: { type: Schema.Types.ObjectId, ref: "Course" },
     title: { type: String, required: true },
     body: { type: String, required: true },
-    videoUrl: { type: String, required: true },
+    video_url: { type: String, required: true },
     number: { type: String, required: true },
-    videoCount: { type: Number, required: true },
-    commentCount: { type: Number, required: true },
+    video_count: { type: Number, required: true },
+    comment_count: { type: Number, required: true },
   },
   {
     timestamps: {

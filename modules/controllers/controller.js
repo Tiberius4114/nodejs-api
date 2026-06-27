@@ -2,14 +2,16 @@ const { z } = require("zod");
 
 //Models
 const Course = require(`${config.path.models}/Course`);
+const Episode = require(`${config.path.models}/Episode`);
 
 //Validations
-const courseSchema = require(`${config.path.validations}/course`);
+const courseValidation = require(`${config.path.validations}/course`);
+const episodeValidation = require(`${config.path.validations}/episode`);
 
 class Controller {
   constructor() {
-    this.models = { Course };
-    this.validations = { courseSchema };
+    this.models = { Course, Episode };
+    this.validations = { courseValidation, episode: episodeValidation };
   }
 
   errorHandler(error, res) {
