@@ -7,7 +7,7 @@ const router = express.Router();
 const HomeCourseController = require(`${config.path.controller.api}/v1/home/course`);
 
 //courses
-router.get("/courses", HomeCourseController.findAll);
-router.get("/courses/:id", HomeCourseController.findOne);
+router.get("/", HomeCourseController.findAll);
+router.get("/:id", HomeCourseController.findOne);
 
 module.exports = router;

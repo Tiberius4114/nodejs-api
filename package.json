@@ -17,6 +17,7 @@
   "homepage": "https://github.com/Tiberius4114/nodejs-api#readme",
   "description": "",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "body-parser": "^2.2.2",
     "express": "^5.2.1",
     "mongoose": "^9.7.0",
