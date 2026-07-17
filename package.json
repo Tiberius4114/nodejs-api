@@ -25,6 +25,7 @@
   },
   "type": "commonjs",
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/mongoose": "^5.11.96"
   }
 }

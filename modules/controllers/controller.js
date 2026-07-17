@@ -17,7 +17,8 @@ class Controller {
       courseValidation,
       episode: episodeValidation,
       user: {
-        create: userValidation.create,
+        register: userValidation.register,
+        login: userValidation.login,
       },
     };
   }
