@@ -30,7 +30,6 @@ class AuthController extends Controller {
       this.errorHandler(error, res);
     }
   };
-
   login = async (req, res) => {
     try {
       //validation
