@@ -1,8 +1,15 @@
+//controllers
 const Controller = require("../../../controller");
 
+//transformers
+const UserTransform = require("./../../../../transforms/v1/user");
+
 class UserController extends Controller {
-  index = async (req, res) => {
-    return res.json({ message: "user info" });
+  profile = async (req, res) => {
+    return res.json({
+      success: true,
+      data: UserTransform.transform(req.user),
+    });
   };
 }
 

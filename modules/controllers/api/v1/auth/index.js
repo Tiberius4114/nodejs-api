@@ -59,7 +59,7 @@ class AuthController extends Controller {
       res.json({
         success: true,
         message: "ورود شما با موفقیت انجام شد",
-        data: UserTransform.transform(user),
+        data: UserTransform.transform(user, true),
       });
     } catch (error) {
       this.errorHandler(error, res);
