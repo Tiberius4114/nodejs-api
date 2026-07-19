@@ -1,6 +1,8 @@
 const Controller = require("../../../controller");
 const UserTransform = require("./../../../../transforms/v1/user");
 
+const jwt = require("jsonwebtoken");
+
 class AuthController extends Controller {
   register = async (req, res) => {
     try {
@@ -36,7 +38,8 @@ class AuthController extends Controller {
 
       await userData.save();
 
-      res.json({
+      //201 means new resource created
+      res.status(201).json({
         success: true,
         message: "you registered successfully",
         data: transformedUser,
@@ -90,6 +93,86 @@ class AuthController extends Controller {
         success: true,
         message: "ورود شما با موفقیت انجام شد",
         data: transformedUser,
+      });
+    } catch (error) {
+      this.errorHandler(error, res);
+    }
+  };
+
+  //new method for refreshToken
+
+  refresh = async (req, res) => {
+    try {
+      const { refreshToken } = req.body;
+
+      if (!refreshToken) {
+        return res.status(400).json({
+          success: false,
+          message: "Refresh token is required",
+        });
+      }
+
+      //verify authentication of token
+      let decoded;
+      try {
+        decoded = jwt.verify(refreshToken, global.config.secret.refreshToken);
+      } catch (error) {
+        return res.status(401).json({
+          success: false,
+          message: "Session expired or invalid token",
+        });
+      }
+
+      //find user and check existence user based on refresh token and userId
+      const user = await this.models.User.findOne({
+        _id: decoded.user_id,
+        refreshToken: {
+          $elemMatch: {
+            token: refreshToken,
+            expiresAt: { $lte: new Date() },
+          },
+        },
+      });
+
+      if (!user) {
+        return res
+          .status(401)
+          .json({ succss: false, message: "Invalid token or token expired" });
+      }
+
+      //create new accessToken
+
+      const newAccessToken = jwt.sign(
+        { user_id: user._id },
+        global.config.secret.accessToken,
+        { expiresIn: "15m" }
+      );
+
+      //for more safety create (Rotate) our refresh token to have more age on it
+      const newRefreshToken = jwt.sign(
+        { user_id: user._id },
+        global.config.secret.refreshToken,
+        { expiresIn: "7d" }
+      );
+
+      //update new refresh token in db
+      user.refreshToken = user.refreshToken.filter((session) => {
+        return session.token !== refreshToken && session.expiresAt > new Date();
+      });
+
+      user.refreshToken.push({
+        token: newRefreshToken,
+        expiresIn: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
+
+      await user.save();
+
+      return res.json({
+        success: true,
+        data: {
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+        },
       });
     } catch (error) {
       this.errorHandler(error, res);
