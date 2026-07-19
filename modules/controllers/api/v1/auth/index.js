@@ -25,7 +25,22 @@ class AuthController extends Controller {
         password: result.password,
       });
 
-      res.json({ success: true, data: userData });
+      //transform user data with user transform and force it by 'true' to create token
+      const transformedUser = UserTransform.transform(userData, true);
+
+      //store refresh token in db
+      userData.refreshToken.push({
+        token: transformedUser.token.refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 6 * 6 * 1000),
+      });
+
+      await userData.save();
+
+      res.json({
+        success: true,
+        message: "you registered successfully",
+        data: transformedUser,
+      });
     } catch (error) {
       this.errorHandler(error, res);
     }
@@ -56,10 +71,25 @@ class AuthController extends Controller {
         });
       }
 
+      //true means we should create token
+      const transformedUser = UserTransform.transform(user, true);
+
+      //remove before expires tokens to not being crowded db
+      user.refreshToken = user.refreshToken.filter(
+        (t) => t.expiresAt > new Date()
+      );
+
+      user.refreshToken.push({
+        token: transformedUser.token.refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
+
+      await user.save();
+
       res.json({
         success: true,
         message: "ورود شما با موفقیت انجام شد",
-        data: UserTransform.transform(user, true),
+        data: transformedUser,
       });
     } catch (error) {
       this.errorHandler(error, res);

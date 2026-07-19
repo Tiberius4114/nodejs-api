@@ -4,9 +4,7 @@ const User = require(`${config.path.models}/User`);
 
 module.exports = async (req, res, next) => {
   // const authorization = req.headers?.["authorization"];
-
   //or
-
   const authorization = req.get("authorization");
 
   if (!authorization) {
@@ -26,20 +24,19 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, global.config.secret);
+    const decoded = jwt.verify(token, global.config.secret.accessToken);
 
-    if (!decoded) {
-      return res.status(403).json({
-        success: false,
-        message: "Failed to authenticate token.",
-      });
-    }
+    // if (!decoded) {
+    //   return res.status(401).json({
+    //     success: false,
+    //     message: "Failed to authenticate token.",
+    //   });
+    // }
 
-    let user = await User.findById(decoded.user_id);
+    let user = await User.findById(decoded.user_id).lean();
 
     if (user) {
-      user.token = token;
-      req.user = user;
+      req.user = { ...user };
       next();
       return;
     } else {

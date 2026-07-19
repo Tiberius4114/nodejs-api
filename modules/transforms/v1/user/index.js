@@ -14,18 +14,38 @@ class UserTransform extends Transform {
   };
 
   withToken = (item) => {
-    if (item.token) {
-      return { token: item.token };
+    if (item?.token?.accessToken && item?.token?.refreshToken) {
+      return {
+        token: {
+          accessToken: item.token.accessToken,
+          refreshToken: item.token.refreshToken,
+        },
+      };
     }
 
     if (this.createToken) {
-      const secretKey = global.config.secret;
+      //we have two scret key for more security for accessToken and refreshToken
+      const accessSecretKey = global.config.secret.accessToken;
+      const refreshSecretKey = global.config.secret.refreshToken;
 
       const payload = { user_id: item._id };
 
-      const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
+      //create accessToken for short term token (e.g 15 minutes)
+      const accessToken = jwt.sign(payload, accessSecretKey, {
+        expiresIn: "15m",
+      });
 
-      return { token };
+      //create refreshToken for long term token (e.g 7 days)
+      const refreshToken = jwt.sign(payload, refreshSecretKey, {
+        expiresIn: "7d",
+      });
+
+      return {
+        token: {
+          accessToken,
+          refreshToken,
+        },
+      };
     }
 
     return {};
