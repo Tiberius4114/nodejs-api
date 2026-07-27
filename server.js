@@ -1,7 +1,7 @@
 global.config = require("./config");
 
 const express = require("express");
-
+const path = require("path");
 const webRouter = require("./modules/routes/web.js");
 const apiRouter = require("./modules/routes/api/index.js");
 const mongoose = require("mongoose");
@@ -20,6 +20,9 @@ const connectToDB = async () => {
 connectToDB();
 
 const app = express();
+
+//add middleware to shows files after upload
+app.use("/uploads", express.static(__dirname));
 
 //we should define the middleware before defining the routes,
 //because the middleware will be executed before the routes.

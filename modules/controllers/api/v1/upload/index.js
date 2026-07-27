@@ -1,5 +1,5 @@
 const Controller = require("../../../controller");
-
+const path = require("path");
 class UploadController extends Controller {
   single = (req, res) => {
     if (!req.file) {
@@ -7,7 +7,17 @@ class UploadController extends Controller {
     }
 
     try {
-      res.json({ message: req.file });
+      res.json({
+        message: "The file has been uploaded successfully",
+        success: true,
+        data: {
+          ...req.file,
+          path: `http://localhost:8000/uploads/${req.file.path.replaceAll(
+            "\\",
+            "/"
+          )}`,
+        },
+      });
     } catch (error) {
       this.errorHandler(error, res);
     }
