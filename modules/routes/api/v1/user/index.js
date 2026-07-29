@@ -6,7 +6,7 @@ const UserController = require(`${config.path.controller.api}/v1/user`);
 
 //middlewares
 
-const authMiddleware = require("../middlewares/authenticate");
+const authMiddleware = require(`${global.config.path.middlewares}/authenticate`);
 
 //routes
 router.get("/", authMiddleware, UserController.profile);

@@ -14,5 +14,7 @@ module.exports = {
     },
     validations: path.resolve("./modules/validations"),
     models: path.resolve("./modules/models"),
+    middlewares: path.resolve("./middlewares"),
+    utils: path.resolve("./utils"),
   },
 };
