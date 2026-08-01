@@ -22,7 +22,21 @@ connectToDB();
 const app = express();
 
 //add middleware to shows files after upload
-app.use("/uploads", express.static(path.join(__dirname, "public", "files")));
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "public", "files"), {
+    fallthrough: true,
+    index: false,
+    dotfiles: "deny",
+  })
+);
+
+/**
+ * Middleware options:
+ * - fallthrough: If set to true, the next middleware will be called if no file is found.
+ * - dotfiles: Controls whether to serve dotfiles (files beginning with a dot).
+ * - index: Controls whether to show index files (e.g. index.html).
+ */
 
 //we should define the middleware before defining the routes,
 //because the middleware will be executed before the routes.

@@ -72,7 +72,6 @@ const errorCreator = (message, statusCode = 400) => {
  * @param {string} rawPath
  * @returns {string}
  */
-
 const normalizeToRelativePath = (rawPath) => {
   if (!rawPath || typeof rawPath !== "string") return "";
 
@@ -80,9 +79,22 @@ const normalizeToRelativePath = (rawPath) => {
   //public\\files\\images\\2026-07-29\\d97b5e57-a32f-4d0a-ae26-3b0dd8c77f68.png'
   const normalizePath = rawPath.replaceAll(/\\/g, "/");
 
-  const cleanPath = normalizePath.replace(/public\/files\//, "/");
+  const cleanPath = normalizePath.replace(/public\/files\//, "");
 
   return cleanPath;
+};
+
+/**
+ * @param {string} mimetype
+ * @returns {string}
+ */
+const getFileType = (mimetype) => {
+  if (!mimetype || typeof mimetype !== "string") return "unknown";
+
+  if (mimetype.startsWith("image/")) return "image";
+  if (mimetype.startsWith("application/")) return "document";
+
+  return "unknown";
 };
 
 module.exports = {
@@ -91,4 +103,5 @@ module.exports = {
   normalizeToRelativePath,
   sortFilesByIndex,
   errorCreator,
+  getFileType,
 };

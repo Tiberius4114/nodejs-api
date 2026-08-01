@@ -4,6 +4,7 @@ const { z } = require("zod");
 const Course = require(`${config.path.models}/Course`);
 const Episode = require(`${config.path.models}/Episode`);
 const User = require(`${config.path.models}/User`);
+const Media = require(`${config.path.models}/Media`);
 
 //Validations
 const courseValidation = require(`${config.path.validations}/course`);
@@ -12,7 +13,7 @@ const userValidation = require(`${config.path.validations}/user`);
 
 class Controller {
   constructor() {
-    this.models = { Course, Episode, User };
+    this.models = { Course, Episode, User, Media };
     this.validations = {
       courseValidation,
       episode: episodeValidation,
