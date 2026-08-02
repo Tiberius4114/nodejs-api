@@ -76,8 +76,6 @@ class AdminCourseController extends Controller {
         }
       );
 
-      console.log(updatedCourse, "UPDATED COURS");
-
       res.json({ data: updatedCourse });
     } catch (error) {
       console.error(error, "ERROR");

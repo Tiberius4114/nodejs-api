@@ -16,7 +16,6 @@ const connectToDB = async () => {
     process.exit(1);
   }
 };
-
 connectToDB();
 
 const app = express();

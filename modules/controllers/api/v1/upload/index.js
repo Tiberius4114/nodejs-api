@@ -15,8 +15,6 @@ class UploadController extends Controller {
   multiple = async (req, res) => {
     const files = req.files || [];
 
-    console.log("files", files);
-
     let createdMedia = [];
 
     const baseUrl = process.env.APP_BASE_URL || "http://localhost:8000";
@@ -35,8 +33,6 @@ class UploadController extends Controller {
       req.files = sortedFiles;
 
       const mediaPayload = sortedFiles.map((file) => {
-        const normalizedPath = normalizeToRelativePath(file.path);
-
         return {
           fieldname: file.fieldname,
           originalname: file.originalname,
@@ -44,7 +40,7 @@ class UploadController extends Controller {
           filename: file.filename,
           mimetype: file.mimetype,
           size: file.size,
-          path: normalizedPath,
+          path: file.path,
           fileType: getFileType(file.mimetype),
         };
       });
@@ -56,15 +52,18 @@ class UploadController extends Controller {
       res.json({
         message: "The file has been uploaded successfully",
         success: true,
-        data: createdMedia.map((media) => ({
-          id: media._id,
-          originalName: media.originalName,
-          filename: media.filename,
-          mimetype: media.mimetype,
-          size: media.size,
-          path: media.path,
-          url: `${baseUrl}/uploads/${media.path}`,
-        })),
+        data: createdMedia.map((media) => {
+          const normalizedPath = normalizeToRelativePath(media.path);
+
+          return {
+            id: media._id,
+            originalName: media.originalName,
+            filename: media.filename,
+            mimetype: media.mimetype,
+            size: media.size,
+            url: `${baseUrl}/uploads/${normalizedPath}`,
+          };
+        }),
       });
     } catch (error) {
       if (createdMedia.length > 0) {
@@ -79,7 +78,6 @@ class UploadController extends Controller {
           );
         });
       }
-
       //remove temporary files
       deletedUselessFiles(files);
       this.errorHandler(error, res);

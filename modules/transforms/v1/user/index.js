@@ -7,8 +7,10 @@ class UserTransform extends Transform {
     this.createToken = createToken;
 
     return {
+      id: item._id,
       name: item.name,
       email: item.email,
+      avatar: item.avatar,
       ...this.withToken(item),
     };
   };
@@ -30,9 +32,9 @@ class UserTransform extends Transform {
 
       const payload = { user_id: item._id };
 
-      //create accessToken for short term token (e.g 15 minutes)
+      //create accessToken for short term token (e.g 30 minutes)
       const accessToken = jwt.sign(payload, accessSecretKey, {
-        expiresIn: "15m",
+        expiresIn: "30m",
       });
 
       //create refreshToken for long term token (e.g 7 days)

@@ -8,6 +8,7 @@ const UserSchema = new Schema(
     name: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    avatar: { type: Schema.Types.ObjectId, ref: "Media", default: null },
     courses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
     refreshToken: [
       {
@@ -31,7 +32,6 @@ UserSchema.pre("save", async function () {
 });
 
 UserSchema.methods.comparePassword = function (currentPassword) {
-  console.log(currentPassword, this.password, "PASS");
   return bcrypt.compare(currentPassword, this.password);
 };
 

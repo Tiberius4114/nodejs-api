@@ -20,6 +20,7 @@ class Controller {
       user: {
         register: userValidation.register,
         login: userValidation.login,
+        update: userValidation.update,
       },
     };
   }
