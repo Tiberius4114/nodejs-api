@@ -14,17 +14,18 @@ class AdminCourseController extends Controller {
     console.log(req.user, "USER");
 
     try {
-      let courses = await this.models.Course.find();
+      let courses = await this.models.Course.find().populate("episodes");
 
       courses = courses.map((course) => {
         return {
-          user: re,
+          user: course,
           ...course,
         };
       });
 
       res.json({ data: courses });
     } catch (err) {
+      console.log(err, "ERRORR");
       res.status(500).json({ message: "Database error" });
     }
   }

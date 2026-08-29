@@ -34,7 +34,7 @@ class UserTransform extends Transform {
 
       //create accessToken for short term token (e.g 30 minutes)
       const accessToken = jwt.sign(payload, accessSecretKey, {
-        expiresIn: "30m",
+        expiresIn: "2h",
       });
 
       //create refreshToken for long term token (e.g 7 days)

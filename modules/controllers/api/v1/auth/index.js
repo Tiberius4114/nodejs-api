@@ -145,7 +145,7 @@ class AuthController extends Controller {
       const newAccessToken = jwt.sign(
         { user_id: user._id },
         global.config.secret.accessToken,
-        { expiresIn: "30m" }
+        { expiresIn: "2h" }
       );
 
       //for more safety create (Rotate) our refresh token to have more age on it
