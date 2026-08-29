@@ -10,9 +10,19 @@ class AdminCourseController extends Controller {
     this.destroy = this.destroy.bind(this);
   }
 
-  async findAll(_, res) {
+  async findAll(req, res) {
+    console.log(req.user, "USER");
+
     try {
-      const courses = await this.models.Course.find();
+      let courses = await this.models.Course.find();
+
+      courses = courses.map((course) => {
+        return {
+          user: re,
+          ...course,
+        };
+      });
+
       res.json({ data: courses });
     } catch (err) {
       res.status(500).json({ message: "Database error" });
@@ -22,15 +32,12 @@ class AdminCourseController extends Controller {
   async findOne(req, res) {
     try {
       const paramId = req.params.id;
-
       if (!paramId) {
         return res.status(404).json({
           message: "Not found any course",
         });
       }
-
       const course = await this.models.Course.findById(req.params.id);
-
       res.json({
         message: "Success",
         data: course,
