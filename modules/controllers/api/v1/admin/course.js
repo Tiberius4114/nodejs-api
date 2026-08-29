@@ -1,5 +1,9 @@
 const Controller = require(`${config.path.controller.index}/controller.js`);
 
+//Transforms
+const UserTransform = require(`${config.path.transforms}/v1/user`);
+const CourseTransform = require(`${config.path.transforms}/v1/course`);
+
 class AdminCourseController extends Controller {
   constructor() {
     super();
@@ -18,8 +22,8 @@ class AdminCourseController extends Controller {
 
       courses = courses.map((course) => {
         return {
-          user: course,
-          ...course,
+          user: UserTransform.transform(req.user),
+          ...CourseTransform.transform({ ...course.toObject() }),
         };
       });
 
