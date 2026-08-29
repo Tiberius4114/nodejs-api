@@ -23,7 +23,7 @@ class AdminCourseController extends Controller {
       courses = courses.map((course) => {
         return {
           user: UserTransform.transform(req.user),
-          ...CourseTransform.transform({ ...course.toObject() }),
+          ...CourseTransform.withEpisodes().transform({ ...course.toObject() }),
         };
       });
 
