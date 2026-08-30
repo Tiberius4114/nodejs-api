@@ -4,7 +4,6 @@ const EpisodeTransform = require(`${config.path.transforms}/v1/episode`);
 
 class CourseTransform extends Transform {
   transform(item) {
-    console.log(this, "THIS");
     return {
       title: item.title,
       body: item.body,
