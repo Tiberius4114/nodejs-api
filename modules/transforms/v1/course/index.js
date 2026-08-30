@@ -1,5 +1,7 @@
 const Transform = require("../../transform");
 
+const EpisodeTransform = require(`${config.path.transforms}/v1/episode`);
+
 class CourseTransform extends Transform {
   transform(item) {
     console.log(this, "THIS");
@@ -14,7 +16,7 @@ class CourseTransform extends Transform {
   showEpisodes(item) {
     if (this.withEpisodesStatus) {
       return {
-        episodes: item.episodes,
+        episodes: EpisodeTransform.transformCollection(item.episodes),
       };
     }
     return {};
