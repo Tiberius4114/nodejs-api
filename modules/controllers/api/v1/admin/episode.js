@@ -6,7 +6,14 @@ const Controller = require("../../../controller");
 class AdminEpisodeController extends Controller {
   findAll = async (req, res) => {
     try {
-      const episodes = await this.models.Episode.find();
+      const episodes = await this.models.Episode.find().populate({
+        path: "course",
+        select: "-episodes", // to remove episodes from course
+        populate: {
+          path: "user",
+          select: "name avatar email",
+        },
+      });
 
       res.json({
         data: episodes,
@@ -27,9 +34,14 @@ class AdminEpisodeController extends Controller {
         })
         .parse(req.params);
 
-      const episode = await this.models.Episode.findById(episodeId).populate(
-        "course"
-      );
+      const episode = await this.models.Episode.findById(episodeId).populate({
+        path: "course",
+        select: "-episodes",
+        populate: {
+          path: "user",
+          select: "name avatar email",
+        },
+      });
 
       if (!episode) {
         return res.status(404).json({
