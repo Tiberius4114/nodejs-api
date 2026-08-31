@@ -10,6 +10,6 @@ const authMiddleware = require(`${global.config.path.middlewares}/authenticate`)
 
 //routes
 router.get("/", authMiddleware, UserController.profile);
-router.patch("/update", authMiddleware, UserController.update);
+router.put("/update", authMiddleware, UserController.update);
 
 module.exports = router;
