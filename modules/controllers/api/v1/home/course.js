@@ -50,10 +50,12 @@ class HomeCourseController extends Controller {
         });
       }
 
-      const course = await this.models.Course.findById(req.params.id);
+      const course = await this.models.Course.findById(req.params.id)
+        .populate("user", "avatar name")
+        .populate("episodes", "title body price video_url");
 
       res.json({
-        data: CourseTransform.transform(course),
+        data: course,
         success: true,
       });
     } catch (error) {
