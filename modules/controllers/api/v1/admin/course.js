@@ -1,3 +1,5 @@
+const { populate } = require("../../../../models/Course");
+
 const Controller = require(`${config.path.controller.index}/controller.js`);
 
 //Transforms
@@ -16,16 +18,22 @@ class AdminCourseController extends Controller {
 
   async findAll(req, res) {
     try {
-      let courses = await this.models.Course.find().populate("episodes");
+      let courses = await this.models.Course.paginate(
+        {},
+        {
+          page: req?.query?.page || 1,
+          limit: req?.query?.limit || 1,
+          populate: [
+            { path: "user", select: "avatar name email" },
+            {
+              path: "episodes",
+              select: "-course",
+            },
+          ],
+        }
+      );
 
-      courses = courses.map((course) => {
-        return {
-          user: UserTransform.transform(req.user),
-          ...CourseTransform.withEpisodes().transform({ ...course.toObject() }),
-        };
-      });
-
-      res.json({ data: courses });
+      res.json({ data: CourseTransform.withPaginate(courses) });
     } catch (err) {
       console.log(err, "ERRORR");
       res.status(500).json({ message: "Database error" });

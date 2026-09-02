@@ -25,6 +25,17 @@ class CourseTransform extends Transform {
     // console.log(this, "THIS");
     return this;
   }
+  withPaginate(result) {
+    return {
+      items: result.docs,
+      total: result.totalDocs,
+      limit: result.limit,
+      pages: result.totalPages,
+      page: result.page,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+    };
+  }
 }
 
 module.exports = new CourseTransform();
