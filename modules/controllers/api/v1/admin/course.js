@@ -15,8 +15,6 @@ class AdminCourseController extends Controller {
   }
 
   async findAll(req, res) {
-    console.log(req.user, "USER");
-
     try {
       let courses = await this.models.Course.find().populate("episodes");
 
@@ -42,7 +40,9 @@ class AdminCourseController extends Controller {
           message: "Not found any course",
         });
       }
-      const course = await this.models.Course.findById(req.params.id);
+      const course = await this.models.Course.findById(req.params.id).populate(
+        "episodes"
+      );
       res.json({
         message: "Success",
         data: course,
