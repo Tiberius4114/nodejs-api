@@ -33,7 +33,9 @@ module.exports = async (req, res, next) => {
     //   });
     // }
 
-    let user = await User.findById(decoded.user_id).lean();
+    let user = await User.findById(decoded.user_id).populate("roles").lean();
+
+    console.log(user, "USER");
 
     if (user) {
       req.user = { ...user };
