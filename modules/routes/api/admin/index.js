@@ -7,9 +7,18 @@ const episodesRouter = require("./episodes");
 const rolesRouter = require("./roles");
 
 //middlewares
-const authMiddleware = require(`${global.config.path.middlewares}/authenticate`);
+const authMiddleware = require(`${config.path.middlewares}/authenticate`);
+const permissionMiddleware = require(`${config.path.middlewares}/permissions`);
 
-adminRouter.use("/admin", authMiddleware, rolesRouter);
+//constant
+const { PERMISSIONS } = require(`${config.path.constants}`);
+
+adminRouter.use(
+  "/admin",
+  authMiddleware,
+  permissionMiddleware(PERMISSIONS.SUPER_ADMIN),
+  rolesRouter
+);
 adminRouter.use("/admin", authMiddleware, coursesRouter);
 adminRouter.use("/admin", authMiddleware, episodesRouter);
 

@@ -1,4 +1,4 @@
-module.exports = async (...requiredPermissions) => {
+module.exports = (...requiredPermissions) => {
   return (req, res, next) => {
     const user = req.user;
 
