@@ -29,6 +29,16 @@ class UserValidation {
           .min(3, "Name must be at least 3 characters")
           .optional(),
         email: z.email("Invalid email format").optional(),
+        roles: z
+          .array(
+            z.string().refine(
+              (val) => {
+                return mongoose.Types.ObjectId.isValid(val);
+              },
+              { message: "RoleId is invalid" }
+            )
+          )
+          .min(1),
       })
       .partial();
   };

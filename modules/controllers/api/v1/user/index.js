@@ -4,9 +4,9 @@ const Controller = require("../../../controller");
 //transformers
 const UserTransform = require("./../../../../transforms/v1/user");
 
-const {
-  deletedUselessFiles,
-} = require(`${global.config.path.middlewares}/upload`);
+const { deletedUselessFiles } = require(
+  `${global.config.path.middlewares}/upload`
+);
 
 class UserController extends Controller {
   profile = async (req, res) => {
@@ -32,10 +32,29 @@ class UserController extends Controller {
         });
       }
 
-      //if we had avatar in request body
-      const newAvatarId = validationResult?.avatar;
-      let oldMediaIdToDelete = null;
+      const { roleIds, ...userFields } = validationResult;
 
+      const updateQueries = {
+        $set: userFields,
+      };
+
+      if (roleIds !== undefined) {
+        const validRolesCount = await this.models.Role.countDocument({
+          _id: { $in: roleIds },
+        });
+
+        if (validRolesCount !== roleIds) {
+          return res.status(400).json({
+            success: false,
+            message: "One or more role Ids are invalid",
+          });
+        }
+        updateQueries.$set.roles = roleIds;
+      }
+
+      //if we had avatar in request body
+      const newAvatarId = userFields?.avatar;
+      let oldMediaIdToDelete = null;
       //check we uploaded avatar before
       if (
         newAvatarId &&
@@ -48,19 +67,20 @@ class UserController extends Controller {
       //update user data
       const updatedUser = await this.models.User.findByIdAndUpdate(
         userId,
-        {
-          $set: validationResult,
-        },
+        updateQueries,
         {
           new: true,
+          runValidators: true,
         }
-      ).populate("avatar");
+      )
+        .select("id name email avatar roles")
+        .populate("avatar")
+        .populate("roles");
 
       //delete old avatar if we had one
       if (oldMediaIdToDelete) {
-        const mediaFile = await this.models.Media.findByIdAndDelete(
-          oldMediaIdToDelete
-        );
+        const mediaFile =
+          await this.models.Media.findByIdAndDelete(oldMediaIdToDelete);
 
         //remove media file from storage and db
         if (mediaFile) {
@@ -72,7 +92,7 @@ class UserController extends Controller {
       res.json({
         success: true,
         message: "User updated successfully",
-        data: UserTransform.transform(updatedUser),
+        data: updatedUser,
       });
     } catch (error) {
       this.errorHandler(error, res);

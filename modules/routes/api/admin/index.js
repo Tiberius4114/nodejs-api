@@ -16,7 +16,7 @@ const { PERMISSIONS } = require(`${config.path.constants}`);
 adminRouter.use(
   "/admin",
   authMiddleware,
-  permissionMiddleware(PERMISSIONS.SUPER_ADMIN),
+  // permissionMiddleware(PERMISSIONS.SUPER_ADMIN),
   rolesRouter
 );
 adminRouter.use("/admin", authMiddleware, coursesRouter);
