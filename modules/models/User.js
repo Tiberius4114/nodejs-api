@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
-const { stringFormat } = require("zod");
 
 const UserSchema = new Schema(
   {
@@ -10,6 +9,7 @@ const UserSchema = new Schema(
     password: { type: String, required: true },
     avatar: { type: Schema.Types.ObjectId, ref: "Media", default: null },
     courses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
+    roles: [{ type: Schema.Types.ObjectId, ref: "Role" }],
     refreshToken: [
       {
         token: String,

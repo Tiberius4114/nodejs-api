@@ -13,10 +13,10 @@ module.exports = {
       web: path.resolve("./modules/controllers/web.js"),
     },
     transforms: path.resolve("./modules/transforms"),
-
     validations: path.resolve("./modules/validations"),
     models: path.resolve("./modules/models"),
     middlewares: path.resolve("./middlewares"),
     utils: path.resolve("./utils"),
+    constants: path.resolve("./constants"),
   },
 };
