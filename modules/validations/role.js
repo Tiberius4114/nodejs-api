@@ -17,10 +17,12 @@ const createRoleSchema = z.object({
     .max(50, "عنوان نقش نمی‌تواند بیشتر از ۵۰ کاراکتر باشد"),
   permissions: z
     .array(
-      z.enum(validPermissions, "یک یا چند دسترسی انتخاب‌شده نامعتبر است"),
-      "لیست دسترسی‌ها باید به صورت آرایه ارسال شود"
+      z.enum(validPermissions, {
+        error: "یک یا چند دسترسی انتخاب‌شده نامعتبر است",
+      }),
+      { error: "لیست دسترسی‌ها باید به صورت آرایه ارسال شود" }
     )
-    .default(), // set as [] by default,
+    .default([]),
 });
 
 const updateRoleSchema = createRoleSchema.partial();

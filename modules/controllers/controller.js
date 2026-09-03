@@ -11,6 +11,7 @@ const Role = require(`${config.path.models}/Role`);
 const courseValidation = require(`${config.path.validations}/course`);
 const episodeValidation = require(`${config.path.validations}/episode`);
 const userValidation = require(`${config.path.validations}/user`);
+const roleValidation = require(`${config.path.validations}/role`);
 
 class Controller {
   constructor() {
@@ -23,11 +24,14 @@ class Controller {
         login: userValidation.login,
         update: userValidation.update,
       },
+      role: {
+        create: roleValidation.createRoleSchema,
+        update: roleValidation.updateRoleSchema,
+      },
     };
   }
 
   errorHandler(error, res) {
-    // console.log, "ERROR");
     if (error instanceof z.ZodError) {
       return res.status(422).json({
         message: "Validation error",
