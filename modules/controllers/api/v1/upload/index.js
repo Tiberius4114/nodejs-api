@@ -1,8 +1,8 @@
 const Controller = require("../../../controller");
 
-const {
-  deletedUselessFiles,
-} = require(`${global.config.path.middlewares}/upload`);
+const { deletedUselessFiles } = require(
+  `${global.config.path.middlewares}/upload`
+);
 
 const {
   validateFilesPayloadFormat,
@@ -80,6 +80,60 @@ class UploadController extends Controller {
       }
       //remove temporary files
       deletedUselessFiles(files);
+      this.errorHandler(error, res);
+    }
+  };
+  singleDestroy = async (req, res) => {
+    try {
+      const { id } = this.validations.media.single.parse(req.params);
+
+      const media = await this.models.Media.findById(id);
+
+      if (!media) {
+        return res.status(404).json({
+          success: false,
+          message: "not found any file",
+        });
+      }
+
+      await this.models.Media.findByIdAndDelete(id);
+
+      deletedUselessFiles([media]);
+
+      return res.status(200).json({
+        success: true,
+        message: "فایل با موفقیت حذف شد.",
+      });
+    } catch (error) {
+      this.errorHandler(error, res);
+    }
+  };
+  bulkDestroy = async (req, res) => {
+    try {
+      const { ids } = this.validations.media.bulk.parse(req.body);
+
+      const mediaFiles = await this.models.Media.find({
+        _id: { $in: ids },
+      });
+
+      if (!mediaFiles.length) {
+        return res.status(404).json({
+          success: false,
+          message: "not found any entered media items",
+        });
+      }
+
+      //collect mediaIds from db
+      const mediaIds = mediaFiles.map((m) => m._id);
+
+      await this.models.Media.deleteMany({ _id: { $in: mediaIds } });
+      deletedUselessFiles(mediaFiles);
+
+      return res.status(200).json({
+        success: true,
+        message: `${mediaFiles.length} فایل با موفقیت حذف شدند.`,
+      });
+    } catch (error) {
       this.errorHandler(error, res);
     }
   };

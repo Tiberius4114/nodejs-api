@@ -12,6 +12,7 @@ const courseValidation = require(`${config.path.validations}/course`);
 const episodeValidation = require(`${config.path.validations}/episode`);
 const userValidation = require(`${config.path.validations}/user`);
 const roleValidation = require(`${config.path.validations}/role`);
+const mediaValidation = require(`${config.path.validations}/media`);
 
 class Controller {
   constructor() {
@@ -27,6 +28,10 @@ class Controller {
       role: {
         create: roleValidation.createRoleSchema,
         update: roleValidation.updateRoleSchema,
+      },
+      media: {
+        single: mediaValidation.singleDeleteSchema,
+        bulk: mediaValidation.bulkDeleteSchema,
       },
     };
   }

@@ -18,12 +18,15 @@ class UserValidation {
   update = () => {
     return z
       .object({
-        avatar: z.string().refine(
-          (val) => {
-            return mongoose.Types.ObjectId.isValid(val);
-          },
-          { message: "avatar id is invalid" }
-        ),
+        avatar: z
+          .string()
+          .refine(
+            (val) => {
+              return mongoose.Types.ObjectId.isValid(val);
+            },
+            { message: "avatar id is invalid" }
+          )
+          .nullable(),
         name: z
           .string()
           .min(3, "Name must be at least 3 characters")
