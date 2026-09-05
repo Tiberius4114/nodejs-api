@@ -5,7 +5,7 @@ const Controller = require("../../../controller");
 const UserTransform = require("./../../../../transforms/v1/user");
 
 const { deletedUselessFiles } = require(
-  `${global.config.path.middlewares}/upload`
+  `${global.config.path.middlewares}/upload`,
 );
 
 class UserController extends Controller {
@@ -39,11 +39,11 @@ class UserController extends Controller {
       };
 
       if (roleIds !== undefined) {
-        const validRolesCount = await this.models.Role.countDocument({
+        const validRolesCount = await this.models.Role.countDocuments({
           _id: { $in: roleIds },
         });
 
-        if (validRolesCount !== roleIds) {
+        if (validRolesCount !== roleIds.length) {
           return res.status(400).json({
             success: false,
             message: "One or more role Ids are invalid",
@@ -71,9 +71,8 @@ class UserController extends Controller {
         {
           new: true,
           runValidators: true,
-        }
+        },
       )
-        .select("id name email avatar roles")
         .populate("avatar")
         .populate("roles");
 
@@ -92,7 +91,7 @@ class UserController extends Controller {
       res.json({
         success: true,
         message: "User updated successfully",
-        data: updatedUser,
+        data: UserTransform.transform(updatedUser),
       });
     } catch (error) {
       this.errorHandler(error, res);

@@ -1,5 +1,7 @@
 const Transform = require("../../transform");
 
+const MediaTransform = require("../media");
+
 const jwt = require("jsonwebtoken");
 
 class UserTransform extends Transform {
@@ -10,9 +12,22 @@ class UserTransform extends Transform {
       id: item._id,
       name: item.name,
       email: item.email,
-      avatar: item.avatar,
+      avatar: this.transformAvatar(item.avatar),
+      roles: item.roles || [],
       ...this.withToken(item),
     };
+  };
+
+  transformAvatar = (avatar) => {
+    if (!avatar) return null;
+
+    //if avatar is populated (media document) transform it,
+    //otherwise it is just an ObjectId so return it as is
+    if (typeof avatar === "object" && avatar.path) {
+      return MediaTransform.transform(avatar);
+    }
+
+    return avatar;
   };
 
   withToken = (item) => {

@@ -1,23 +1,23 @@
 const Controller = require("../../../controller");
 
+const MediaTransform = require("../../../../transforms/v1/media");
+
 const { deletedUselessFiles } = require(
-  `${global.config.path.middlewares}/upload`
+  `${global.config.path.middlewares}/upload`,
 );
 
 const {
   validateFilesPayloadFormat,
   sortFilesByIndex,
   errorCreator,
-  normalizeToRelativePath,
   getFileType,
 } = require(`${global.config.path.utils}`);
 class UploadController extends Controller {
   multiple = async (req, res) => {
     const files = req.files || [];
 
+    console.log(files, "FILES");
     let createdMedia = [];
-
-    const baseUrl = process.env.APP_BASE_URL || "http://localhost:8000";
 
     try {
       //check formdata key field that be on "files[index]" format
@@ -26,7 +26,6 @@ class UploadController extends Controller {
       if (!formatValidation.isValid) {
         throw errorCreator(formatValidation.error, 400);
       }
-
       //sort files that
       const sortedFiles = sortFilesByIndex(files);
 
@@ -48,33 +47,24 @@ class UploadController extends Controller {
       //const file metadata to be saved in database
       createdMedia = await this.models.Media.insertMany(mediaPayload);
 
+      console.log(createdMedia, "CREATED MEDIA");
+
       //add finall transformed files in request for next usage
       res.json({
         message: "The file has been uploaded successfully",
         success: true,
-        data: createdMedia.map((media) => {
-          const normalizedPath = normalizeToRelativePath(media.path);
-
-          return {
-            id: media._id,
-            originalName: media.originalName,
-            filename: media.filename,
-            mimetype: media.mimetype,
-            size: media.size,
-            url: `${baseUrl}/uploads/${normalizedPath}`,
-          };
-        }),
+        data: MediaTransform.transformCollection(createdMedia),
       });
     } catch (error) {
       if (createdMedia.length > 0) {
         const createdIds = createdMedia.map((media) => media._id);
 
-        await Media.deleteMany({
+        await this.models.Media.deleteMany({
           _id: { $in: createdIds },
         }).catch((databaseError) => {
           console.error(
             "Failed to remove created media documents:",
-            databaseError
+            databaseError,
           );
         });
       }

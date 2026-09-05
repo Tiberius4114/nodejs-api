@@ -38,7 +38,7 @@ module.exports = async (req, res, next) => {
       .populate("roles")
       .lean();
 
-    console.log(user, "USER");
+    console.log(user, "USER MIDDLEWARE");
 
     if (user) {
       req.user = { ...user };

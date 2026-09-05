@@ -53,6 +53,7 @@ const sortFilesByIndex = (files) => {
   return currentFiles.sort((a, b) => {
     const indexA = parseInt(a.fieldname.match(/\d+/)[0]);
     const indexB = parseInt(b.fieldname.match(/\d+/)[0]);
+
     return indexA - indexB;
   });
 };

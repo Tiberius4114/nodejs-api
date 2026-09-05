@@ -3,11 +3,11 @@ class Transform {
   // "Any class that inherits from me must implement
   //  the method in its own way (Method Overriding)."
   // If a child does not do this, an error is thrown.
-  transform() {
+  transform = () => {
     throw new Error(
-      "Abstract class 'Transform' cannot be instantiated directly."
+      "Abstract class 'Transform' cannot be instantiated directly.",
     );
-  }
+  };
 
   transformCollection = (items) => {
     return items.map((item) => this.transform(item));
