@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 
 const User = require(`${config.path.models}/User`);
 
+const UserTransform = require(`${config.path.transforms}/v1/user`);
+
 module.exports = async (req, res, next) => {
   // const authorization = req.headers?.["authorization"];
   //or
@@ -38,10 +40,8 @@ module.exports = async (req, res, next) => {
       .populate("roles")
       .lean();
 
-    console.log(user, "USER MIDDLEWARE");
-
     if (user) {
-      req.user = { ...user };
+      req.user = { ...UserTransform.transform(user) };
       next();
       return;
     } else {

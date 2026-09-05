@@ -1,9 +1,6 @@
-const { populate } = require("../../../../models/Course");
-
 const Controller = require(`${config.path.controller.index}/controller.js`);
 
 //Transforms
-const UserTransform = require(`${config.path.transforms}/v1/user`);
 const CourseTransform = require(`${config.path.transforms}/v1/course`);
 
 class AdminCourseController extends Controller {
@@ -30,10 +27,10 @@ class AdminCourseController extends Controller {
               select: "-course",
             },
           ],
-        }
+        },
       );
 
-      res.json({ data: CourseTransform.withPaginate(courses) });
+      res.json({ ...CourseTransform.withPaginate(courses) });
     } catch (err) {
       console.log(err, "ERRORR");
       res.status(500).json({ message: "Database error" });
@@ -49,7 +46,7 @@ class AdminCourseController extends Controller {
         });
       }
       const course = await this.models.Course.findById(req.params.id).populate(
-        "episodes"
+        "episodes",
       );
       res.json({
         message: "Success",
@@ -93,7 +90,7 @@ class AdminCourseController extends Controller {
         {
           new: true,
           runValidators: false,
-        }
+        },
       );
 
       res.json({ data: updatedCourse });

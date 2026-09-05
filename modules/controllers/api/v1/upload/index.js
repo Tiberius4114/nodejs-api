@@ -16,7 +16,6 @@ class UploadController extends Controller {
   multiple = async (req, res) => {
     const files = req.files || [];
 
-    console.log(files, "FILES");
     let createdMedia = [];
 
     try {
@@ -46,8 +45,6 @@ class UploadController extends Controller {
 
       //const file metadata to be saved in database
       createdMedia = await this.models.Media.insertMany(mediaPayload);
-
-      console.log(createdMedia, "CREATED MEDIA");
 
       //add finall transformed files in request for next usage
       res.json({
