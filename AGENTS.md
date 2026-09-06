@@ -49,4 +49,5 @@ This repository is a Node.js REST API (a course platform with courses, episodes,
 
 Add a short dated line here when the user asks to "update AGENTS.md". Keep newest entries at the top.
 
+- 2026-09-06: Upload middleware now supports video uploads (grouped `allowedMimeTypes`, `public/files/videos/` storage, 100MB limit); added `video` to Media `fileType` enum and `getFileType`; upload response uses `MediaTransform`; user transform shapes populated avatars via `MediaTransform`; user update validates avatar media exists and is an image.
 - 2026-09-05: Renamed `agent.md` to `AGENTS.md`; documented tech stack, project structure, and conventions.

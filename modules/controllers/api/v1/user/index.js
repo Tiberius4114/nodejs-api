@@ -19,8 +19,6 @@ class UserController extends Controller {
   update = async (req, res) => {
     const userId = req.user._id;
 
-    //TODO: check if avatar id that send in payload is exist in media collection or not
-    //if not exist return 404 error
     try {
       const validationResult = this.validations.user.update().parse(req.body);
       const userData = await this.models.User.findById(req.user._id);
@@ -55,6 +53,27 @@ class UserController extends Controller {
       //if we had avatar in request body
       const newAvatarId = userFields?.avatar;
       let oldMediaIdToDelete = null;
+
+      if (newAvatarId) {
+        const avatarMedia = await this.models.Media.findById(newAvatarId);
+
+        //check avatar media exists in media collection
+        if (!avatarMedia) {
+          return res.status(404).json({
+            success: false,
+            message: "Avatar media not found",
+          });
+        }
+
+        //avatar must always be an image
+        if (avatarMedia.fileType !== "image") {
+          return res.status(400).json({
+            success: false,
+            message: "Avatar must be an image file",
+          });
+        }
+      }
+
       //check we uploaded avatar before
       if (
         newAvatarId &&
