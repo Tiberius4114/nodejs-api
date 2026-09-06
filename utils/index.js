@@ -93,6 +93,7 @@ const getFileType = (mimetype) => {
   if (!mimetype || typeof mimetype !== "string") return "unknown";
 
   if (mimetype.startsWith("image/")) return "image";
+  if (mimetype.startsWith("video/")) return "video";
   if (mimetype.startsWith("application/")) return "document";
 
   return "unknown";

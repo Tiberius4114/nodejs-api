@@ -26,7 +26,7 @@ const mediaSchema = new Schema(
     fileType: {
       type: String,
       required: true,
-      enum: ["image", "document"],
+      enum: ["image", "document", "video"],
     },
   },
   {

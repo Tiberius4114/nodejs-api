@@ -5,36 +5,51 @@ const fs = require("fs/promises");
 const { v4: uuidv4 } = require("uuid");
 const { mkdirp } = require("mkdirp");
 
-const allowedMimeTypes = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "application/pdf",
-  "application/zip",
-  "application/x-zip-compressed",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-];
+//allowed mimetypes grouped by category, each category has its own storage folder
+const allowedMimeTypes = {
+  image: ["image/jpeg", "image/png", "image/webp"],
+  document: [
+    "application/pdf",
+    "application/zip",
+    "application/x-zip-compressed",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ],
+  video: ["video/mp4", "video/webm", "video/x-matroska", "video/quicktime"],
+};
 
-const imageStorage = multer.diskStorage({
+const categoryFolders = {
+  image: "images",
+  document: "docs",
+  video: "videos",
+};
+
+/**
+ * @param {string} mimetype
+ * @returns {string|null} category key (image | document | video) or null
+ */
+const getFileCategory = (mimetype) => {
+  return (
+    Object.keys(allowedMimeTypes).find((category) =>
+      allowedMimeTypes[category].includes(mimetype),
+    ) || null
+  );
+};
+
+const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const year = new Date().getFullYear();
-
     //getMonth started from 0 it should be plus 1
     const month = String(new Date().getMonth() + 1).padStart(2, "0");
-
     //to get current day of month
     const day = String(new Date().getDate()).padStart(2, "0");
 
-    const isImage = file.mimetype.startsWith("image/");
-
     const folderDate = `${year}-${month}-${day}`;
+    //pick folder based on file category (images | docs | videos)
+    const category = getFileCategory(file.mimetype);
 
-    let dir = `public/files/images/${folderDate}`;
-
-    if (!isImage) {
-      dir = `public/files/docs/${folderDate}`;
-    }
+    const folder = categoryFolders[category] || "docs";
+    const dir = `public/files/${folder}/${folderDate}`;
 
     mkdirp(dir)
       .then(() => {
@@ -52,7 +67,7 @@ const imageStorage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (!allowedMimeTypes.includes(file.mimetype)) {
+  if (!getFileCategory(file.mimetype)) {
     return cb(new Error("File type is not allowed"), false);
   }
 
@@ -60,10 +75,10 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage: imageStorage,
+  storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB,
+    fileSize: 100 * 1024 * 1024, // 100MB (videos need more room than images/docs)
   },
 });
 
@@ -76,7 +91,7 @@ const deletedUselessFiles = (files) => {
       fs.unlink(file.path).catch((err) => {
         console.error(
           `Error in delete temporary file on ${file.path}`,
-          err?.message
+          err?.message,
         );
       });
     }
